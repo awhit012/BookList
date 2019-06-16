@@ -82,7 +82,7 @@ const handleNext = (event) => {
 	}
 }
 
-const createButtons = data => {
+const createButton = data => {
 	let buttonNext = document.createElement('button')
 		buttonNext.classList.add("btn")
 	if(data.status === "toRead") {
@@ -103,7 +103,7 @@ const createButtons = data => {
 
 const createCard = (data) => {
 	let pagesMessage = createPagesMessage(data)	
-	let button       = createButtons(data)	
+	let button       = createButton(data)	
 
 	console.log()				
 	let item = `<div id="${data.id}">
