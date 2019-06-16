@@ -12,3 +12,9 @@ In progress books track what page we are on.
 
 Books allow for us to rate them out of 5 stars, and make a comment.
 
+
+//// Create completed. 
+/// For Read, allow an array of pre-populated items to load
+/// For Update, add button on each card that says "mark ____" (either in progress or completed)
+/// on in progress, add button that can update current page
+// for Delete, and X

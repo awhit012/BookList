@@ -9,3 +9,7 @@ input:valid {
 .hide {
 	display: none;
 }
+
+.right {
+	text-align: right;
+}
