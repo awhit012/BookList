@@ -1,4 +1,9 @@
-                    
+books = [
+	{id: 1, title: "The Teachings of Don Juan", author: "Carlos Casteñeda", pages: 288, status: "complete", currentPage: 288},
+	{id: 2, title: "You Don't Know JavaScript: Up and Going", author: "Kyle Simpson", pages: 87, status: "complete", currentPage: 87},
+	{id: 3, title: "Permaculture: A Designers' Manual", author: "Bill Mollison", pages: 576, status: "toRead", currentPage: 0},
+	{id: 4, title: "Atlantis: Insights from a Lost Civilization", author: "Shirley Andrews", pages: 292, status: "inProgress", currentPage: 96},
+]                    
 
 
 
@@ -44,6 +49,10 @@ const createCard = (data) => {
 	element.innerHTML = item
 	addToDOM(element, data.status)
 }
+
+books.forEach( (book) => {
+	createCard(book)
+}) 
 
 addBookButton.addEventListener("click", () => {
 	bookForm.classList.toggle("hide")
