@@ -13,3 +13,7 @@ input:valid {
 .right {
 	text-align: right;
 }
+
+.btn {
+	margin: 1em;
+}
