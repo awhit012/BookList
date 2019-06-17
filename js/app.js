@@ -1,10 +1,5 @@
-books = [
-	{id: 1, title: "The Teachings of Don Juan", author: "Carlos Casteñeda", pages: 288, status: "complete", currentPage: 288},
-	{id: 2, title: "You Don't Know JavaScript: Up and Going", author: "Kyle Simpson", pages: 87, status: "complete", currentPage: 87},
-	{id: 3, title: "Permaculture: A Designers' Manual", author: "Bill Mollison", pages: 576, status: "toRead", currentPage: 0},
-	{id: 4, title: "Atlantis: Insights from a Lost Civilization", author: "Shirley Andrews", pages: 292, status: "inProgress", currentPage: 96},
-]                    
-
+let storage = JSON.parse(localStorage.getItem('books'))
+let books = storage || []
 
 
 const addBookButton    = document.querySelector("#addBook")
@@ -149,6 +144,8 @@ bookForm.addEventListener("submit", (event) => {
 		status: statusInput.value,
 		currentPage: currentPageInput.value
 	}
+	books.push(bookData)
+	localStorage.setItem("books", JSON.stringify(books))
 	createCard(bookData)
 })
 
