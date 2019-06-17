@@ -132,7 +132,9 @@ addBookButton.addEventListener("click", () => {
 
 statusInput.addEventListener("change", (event) => {
 	if(event.target.options.selectedIndex === 1) {
-		currentPageForm.classList.toggle("hide")
+		currentPageForm.classList.remove("hide")
+	} else {
+		currentPageForm.classList.add("hide")
 	}
 })
 
