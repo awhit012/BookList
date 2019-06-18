@@ -20,10 +20,10 @@ class Model {
 		}
 	}
 
-	markInComplete = (id) => {
+	markComplete = (id) => {
 		for(var i=0 ; i < this.books.length; i++) {
 	    if(this.books[i].id == id) {
-	      this.books[i].status = "inComplete"
+	      this.books[i].status = "complete"
 	    }
 		}
 	}
@@ -50,7 +50,7 @@ class Controller {
 				addToDOM(bookCard, "inProgress")
 				break;
 			case "markComplete":
-				model.markInComplete(bookCard.id)
+				model.markComplete(bookCard.id)
 				addToDOM(bookCard, "complete")
 				break;
 			case "delete":
@@ -58,6 +58,8 @@ class Controller {
 				bookCard.parentNode.removeChild(bookCard)
 				break;
 		}
+		localStorage.setItem("books", JSON.stringify(model.books))
+		location.reload()
 	}
 }
 
@@ -75,7 +77,8 @@ class View {
 		controller.buildCardsFromData(this.createCard)
 	}
 
-	addToDOM(element, status) {
+	addToDOM = (element, status) => {
+		console.log(status)
 		let card = document.querySelector(`#${status}`);
 		card.appendChild(element);
 		card.lastElementChild.lastElementChild.lastElementChild.addEventListener("click", () => { controller.handleNext(event, this.addToDOM) })
@@ -150,15 +153,15 @@ class View {
 			event.preventDefault();
 			let bookData = {
 				id: model.books.length,
-				title: view.titleInput.value,
-				author: view.authorInput.value,
-				pages: view.pagesInput.value,
-				status: view.statusInput.value,
-				currentPage: view.currentPageInput.value
+				title: this.titleInput.value,
+				author: this.authorInput.value,
+				pages: this.pagesInput.value,
+				status: this.statusInput.value,
+				currentPage: this.currentPageInput.value
 			}
 			model.books.push(bookData)
 			localStorage.setItem("books", JSON.stringify(model.books))
-			view.createCard(bookData)
+			this.createCard(bookData)
 		})
 	}
 }
