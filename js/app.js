@@ -34,6 +34,12 @@ class Controller {
 		
 	}
 
+	createBook(bookData) {
+		bookData.id = model.books.length
+		model.books.push(bookData)
+		localStorage.setItem("books", JSON.stringify(model.books))
+	}
+
 	buildCardsFromData(builder) {
 		model.books.forEach( (book) => {
 			builder(book)
@@ -152,15 +158,13 @@ class View {
 		this.bookForm.addEventListener("submit", (event) => {
 			event.preventDefault();
 			let bookData = {
-				id: model.books.length,
 				title: this.titleInput.value,
 				author: this.authorInput.value,
 				pages: this.pagesInput.value,
 				status: this.statusInput.value,
 				currentPage: this.currentPageInput.value
 			}
-			model.books.push(bookData)
-			localStorage.setItem("books", JSON.stringify(model.books))
+			controller.createBook(bookData)
 			this.createCard(bookData)
 		})
 	}
