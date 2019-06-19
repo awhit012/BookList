@@ -31,17 +31,17 @@ class Model {
 
 class Controller {
 	constructor(model) {
-		
+		this.model = model
 	}
 
 	createBook(bookData) {
-		bookData.id = model.books.length
-		model.books.push(bookData)
-		localStorage.setItem("books", JSON.stringify(model.books))
+		bookData.id = this.model.books.length
+		this.model.books.push(bookData)
+		localStorage.setItem("books", JSON.stringify(this.model.books))
 	}
 
 	buildCardsFromData(builder) {
-		model.books.forEach( (book) => {
+		this.model.books.forEach( (book) => {
 			builder(book)
 		})
 	}
@@ -52,25 +52,26 @@ class Controller {
 		let bookCard = event.target.parentElement.parentElement
 		switch (event.target.id){
 			case "markInProgress":
-				model.markInProgress(bookCard.id)
+				this.model.markInProgress(bookCard.id)
 				addToDOM(bookCard, "inProgress")
 				break;
 			case "markComplete":
-				model.markComplete(bookCard.id)
+				this.model.markComplete(bookCard.id)
 				addToDOM(bookCard, "complete")
 				break;
 			case "delete":
-				model.removeItemFromArray(bookCard.id)
+				this.model.removeItemFromArray(bookCard.id)
 				bookCard.parentNode.removeChild(bookCard)
 				break;
 		}
-		localStorage.setItem("books", JSON.stringify(model.books))
+		localStorage.setItem("books", JSON.stringify(this.model.books))
 		location.reload()
 	}
 }
 
 class View {
 	constructor(controller) {
+		this.controller = controller
 		this.addBookButton    = document.querySelector("#addBook")
 		this.bookForm         = document.querySelector("#bookForm")
 		this.statusInput      = document.querySelector("#statusInput")
@@ -80,14 +81,14 @@ class View {
 		this.authorInput      = document.querySelector("#author")
 		this.pagesInput       = document.querySelector("#pages")
 		this.createEventListeners()
-		controller.buildCardsFromData(this.createCard)
+		this.controller.buildCardsFromData(this.createCard)
 	}
 
 	addToDOM = (element, status) => {
 		console.log(status)
 		let card = document.querySelector(`#${status}`);
 		card.appendChild(element);
-		card.lastElementChild.lastElementChild.lastElementChild.addEventListener("click", () => { controller.handleNext(event, this.addToDOM) })
+		card.lastElementChild.lastElementChild.lastElementChild.addEventListener("click", () => { this.controller.handleNext(event, this.addToDOM) })
 	}
 
 	createPagesMessage = (data) => {
@@ -164,15 +165,21 @@ class View {
 				status: this.statusInput.value,
 				currentPage: this.currentPageInput.value
 			}
-			controller.createBook(bookData)
+			this.controller.createBook(bookData)
 			this.createCard(bookData)
 		})
 	}
 }
 
-const model      = new Model()
-const controller = new Controller(model)
-const view       = new View(controller)
+function start() {
+	const model      = new Model()
+	const controller = new Controller(model)
+	const view       = new View(controller)
+}
+
+start()
+
+
 
 
 
