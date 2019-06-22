@@ -2,6 +2,43 @@ class Model {
 	constructor() {
 		let storage = JSON.parse(localStorage.getItem('books'))
 		this.books = storage || []
+		this.getBooks()
+	}
+
+	getBooks() {
+		// create a request object
+		let xhr = new XMLHttpRequest();
+
+		// open request. Arguments are the **method**, **url**, and an optional boolean to determine if the request should be **async**
+		xhr.open('GET', 'https://ugly-newt-55.localtunnel.me/books', false);
+		// listener for the request to be loaded
+		xhr.onload = () => {
+		    if (xhr.status === 200) {
+		        this.books = JSON.parse(xhr.responseText)
+				console.log(this.books)
+		    }
+		    // error handling
+		    else {
+		        this.books = [{status: "error"}]
+		    }
+		};
+		// sending the actual request
+		xhr.send();
+	}
+
+	addBook(bookData) {
+		let xhr = new XMLHttpRequest();
+		xhr.open('POST', 'https://ugly-newt-55.localtunnel.me/books');
+		// xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.onload = function() {
+		    if (xhr.status === 200) {
+		        console.log("success", xhr.responseText)
+		    }
+		    else if (xhr.status !== 200) {
+		       console.log("error", xhr.status)
+		    }
+		};
+		xhr.send(JSON.stringify(bookData));
 	}
 
 	removeItemFromArray(id) {
@@ -36,11 +73,11 @@ class Controller {
 
 	createBook(bookData) {
 		bookData.id = this.model.books.length
-		this.model.books.push(bookData)
-		localStorage.setItem("books", JSON.stringify(this.model.books))
+		this.model.addBook(bookData)
 	}
 
 	buildCardsFromData(builder) {
+		console.log(this.model)
 		this.model.books.forEach( (book) => {
 			builder(book)
 		})
