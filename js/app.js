@@ -2,24 +2,27 @@ class Model {
 	constructor() {
 		let storage = JSON.parse(localStorage.getItem('books'))
 		this.books = storage || []
+		this.url = "https://curly-frog-53.localtunnel.me/books"
 		this.getBooks()
 	}
 
 	getBooks() {
 		// create a request object
 		let xhr = new XMLHttpRequest();
-
 		// open request. Arguments are the **method**, **url**, and an optional boolean to determine if the request should be **async**
-		xhr.open('GET', 'https://ugly-newt-55.localtunnel.me/books', false);
+		xhr.open('GET', this.url, false);
 		// listener for the request to be loaded
 		xhr.onload = () => {
 		    if (xhr.status === 200) {
-		        this.books = JSON.parse(xhr.responseText)
-				console.log(this.books)
+		    	try {
+	        	this.books = JSON.parse(xhr.responseText)
+		    	} catch {
+		    		this.books = []
+		    	}
 		    }
 		    // error handling
 		    else {
-		        this.books = [{status: "error"}]
+	        this.books = [{status: "error"}]
 		    }
 		};
 		// sending the actual request
@@ -28,8 +31,7 @@ class Model {
 
 	addBook(bookData) {
 		let xhr = new XMLHttpRequest();
-		xhr.open('POST', 'https://ugly-newt-55.localtunnel.me/books');
-		// xhr.setRequestHeader('Content-Type', 'application/json');
+		xhr.open('POST', this.url);
 		xhr.onload = function() {
 		    if (xhr.status === 200) {
 		        console.log("success", xhr.responseText)
@@ -41,29 +43,47 @@ class Model {
 		xhr.send(JSON.stringify(bookData));
 	}
 
-	removeItemFromArray(id) {
+	update(book) {
+		let xhr = new XMLHttpRequest();
+		xhr.open('PUT', `${this.url}/${book.id}`);
+		xhr.withCredentials = true;
+		xhr.onload = function() {
+		    if (xhr.status === 200) {
+		        console.log("success", xhr.responseText)
+		    }
+		    else if (xhr.status !== 200) {
+		       console.log("error", xhr.status)
+		    }
+		};
+		console.log("book:", book)
+		console.log("xhr:", xhr)
+		xhr.send(JSON.stringify(book));
+	}
+
+	find(id) {
 		for(var i=0 ; i < this.books.length; i++) {
 	    if(this.books[i].id == id) {
-	      this.books.splice(i);
+	      return this.books[i]
 	    }
 		}
 	}
 
-	markInProgress(id) {
-		for(var i=0 ; i < this.books.length; i++) {
-	    if(this.books[i].id == id) {
-	      this.books[i].status = "inProgress"
-	    }
-		}
+	delete(book) {
+		console.log(book, book.id)
+		let xhr = new XMLHttpRequest();
+		xhr.open('DELETE', `${this.url}/${book.id}`);
+		xhr.withCredentials = true;
+		xhr.onload = function() {
+		    if (xhr.status === 200) {
+		        console.log("success", xhr.responseText)
+		    }
+		    else if (xhr.status !== 200) {
+		       console.log("error", xhr.status)
+		    }
+		};
+		xhr.send();
 	}
 
-	markComplete = (id) => {
-		for(var i=0 ; i < this.books.length; i++) {
-	    if(this.books[i].id == id) {
-	      this.books[i].status = "complete"
-	    }
-		}
-	}
 }
 
 class Controller {
@@ -72,12 +92,10 @@ class Controller {
 	}
 
 	createBook(bookData) {
-		bookData.id = this.model.books.length
 		this.model.addBook(bookData)
 	}
 
 	buildCardsFromData(builder) {
-		console.log(this.model)
 		this.model.books.forEach( (book) => {
 			builder(book)
 		})
@@ -87,22 +105,23 @@ class Controller {
 	handleNext(event, addToDOM) {
 		event.preventDefault()
 		let bookCard = event.target.parentElement.parentElement
+		let book = this.model.find(bookCard.id) || {}
 		switch (event.target.id){
 			case "markInProgress":
-				this.model.markInProgress(bookCard.id)
+				book.status = "inProgress"
 				addToDOM(bookCard, "inProgress")
+				this.model.update(book)
 				break;
 			case "markComplete":
-				this.model.markComplete(bookCard.id)
+				book.status = "complete"
 				addToDOM(bookCard, "complete")
+				this.model.update(book)
 				break;
 			case "delete":
-				this.model.removeItemFromArray(bookCard.id)
+				this.model.delete(book)
 				bookCard.parentNode.removeChild(bookCard)
 				break;
 		}
-		localStorage.setItem("books", JSON.stringify(this.model.books))
-		location.reload()
 	}
 }
 
