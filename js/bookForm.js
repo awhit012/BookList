@@ -1,7 +1,7 @@
 class BookForm {
 	constructor() {
 		this.loadForm()
-		this.url = "https://gentle-panda-86.localtunnel.me/books"
+		this.url = "https://heavy-swan-31.localtunnel.me/books"
 		this.bookForm.addEventListener("submit", this.handleSubmit)
 		this.addBookButton = document.querySelector("#addBook")
 		this.addBookButton.addEventListener("click", this.showBookForm)
@@ -59,4 +59,3 @@ class BookForm {
 	}
 }	
 
-new BookForm()
