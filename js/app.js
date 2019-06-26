@@ -23,30 +23,32 @@ createPagesMessage = (data) => {
 	let pagesMessage = document.createElement('small')
 	if (data.status === "inProgress") {
 			pagesMessage.innerHTML = `<small>
-															You have read ${data.currentPage} out of ${data.pages} pages!
-														</small>`
+										You have read ${data.currentPage} out of ${data.pages} pages!
+									</small>`
 	} else {
 			pagesMessage.innerHTML = `<small>
-															Length: ${data.pages} pages
-														</small>`
+										Length: ${data.pages} pages
+									</small>`
 	}
 	return pagesMessage.outerHTML
 }
 
 const removeItemFromArray = (id) => {
 	for(var i=0 ; i<books.length; i++) {
-    if(books[i].id == id) {
-      books.splice(i);
-    }
+	    if(books[i].id == id) {
+	      books.splice(i);
+	    }
 	}
+	save()
 }
 
 const markInProgress = (id) => {
 	for(var i=0 ; i<books.length; i++) {
-    if(books[i].id == id) {
-      books[i].status = "inProgress"
-    }
+	    if(books[i].id == id) {
+	      books[i].status = "inProgress"
+	    }
 	}
+	save()
 }
 
 const markInComplete = (id) => {
@@ -55,6 +57,7 @@ const markInComplete = (id) => {
       books[i].status = "inComplete"
     }
 	}
+	save()
 }
 
 // NOTE: buttons would need to be re-rendered. This is challenging with no framework. Re-rendering based on data becoming updated is EXACTLY what React is going to make easy on us.
@@ -116,6 +119,11 @@ const createCard = (data) => {
 	addToDOM(element, data.status)
 }
 
+const save = () => {
+	localStorage.setItem("books", JSON.stringify(books))
+
+}
+
 books.forEach( (book) => {
 	createCard(book)
 }) 
@@ -145,7 +153,6 @@ bookForm.addEventListener("submit", (event) => {
 		currentPage: currentPageInput.value
 	}
 	books.push(bookData)
-	localStorage.setItem("books", JSON.stringify(books))
 	createCard(bookData)
 })
 
