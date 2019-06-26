@@ -2,13 +2,14 @@ class Model {
 	constructor() {
 		let storage = JSON.parse(localStorage.getItem('books'))
 		this.books = storage || []
-		this.url = "https://curly-frog-53.localtunnel.me/books"
+		this.url = "https://gentle-panda-86.localtunnel.me/books"
 		this.getBooks()
 	}
 
 	getBooks() {
 		// create a request object
 		let xhr = new XMLHttpRequest();
+		xhr.withCredentials = true;
 		// open request. Arguments are the **method**, **url**, and an optional boolean to determine if the request should be **async**
 		xhr.open('GET', this.url, false);
 		// listener for the request to be loaded
@@ -29,19 +30,6 @@ class Model {
 		xhr.send();
 	}
 
-	addBook(bookData) {
-		let xhr = new XMLHttpRequest();
-		xhr.open('POST', this.url);
-		xhr.onload = function() {
-		    if (xhr.status === 200) {
-		        console.log("success", xhr.responseText)
-		    }
-		    else if (xhr.status !== 200) {
-		       console.log("error", xhr.status)
-		    }
-		};
-		xhr.send(JSON.stringify(bookData));
-	}
 
 	update(book) {
 		let xhr = new XMLHttpRequest();
@@ -128,15 +116,6 @@ class Controller {
 class View {
 	constructor(controller) {
 		this.controller = controller
-		this.addBookButton    = document.querySelector("#addBook")
-		this.bookForm         = document.querySelector("#bookForm")
-		this.statusInput      = document.querySelector("#statusInput")
-		this.currentPageForm  = document.querySelector("#currentPageForm")
-		this.currentPageInput = document.querySelector("#currentPageInput")
-		this.titleInput       = document.querySelector("#title")
-		this.authorInput      = document.querySelector("#author")
-		this.pagesInput       = document.querySelector("#pages")
-		this.createEventListeners()
 		this.controller.buildCardsFromData(this.createCard)
 	}
 
@@ -196,34 +175,6 @@ class View {
 		let element = document.createElement('div'); // is a node
 		element.innerHTML = item
 		this.addToDOM(element, data.status)
-	}
-
-	createEventListeners = () => {
-		this.addBookButton.addEventListener("click", () => {
-			this.bookForm.classList.toggle("hide")
-			this.addBookButton.classList.toggle("hide")
-		})
-
-		this.statusInput.addEventListener("change", (event) => {
-			if(event.target.options.selectedIndex === 1) {
-				currentPageForm.classList.remove("hide")
-			} else {
-				currentPageForm.classList.add("hide")
-			}
-		})
-
-		this.bookForm.addEventListener("submit", (event) => {
-			event.preventDefault();
-			let bookData = {
-				title: this.titleInput.value,
-				author: this.authorInput.value,
-				pages: this.pagesInput.value,
-				status: this.statusInput.value,
-				currentPage: this.currentPageInput.value
-			}
-			this.controller.createBook(bookData)
-			this.createCard(bookData)
-		})
 	}
 }
 
