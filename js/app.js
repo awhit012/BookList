@@ -27,6 +27,10 @@ class Model {
 	    }
 		}
 	}
+
+	save() {
+		localStorage.setItem("books", JSON.stringify(this.model.books))
+	}
 }
 
 class Controller {
@@ -37,7 +41,7 @@ class Controller {
 	createBook(bookData) {
 		bookData.id = this.model.books.length
 		this.model.books.push(bookData)
-		localStorage.setItem("books", JSON.stringify(this.model.books))
+		model.save()
 	}
 
 	buildCardsFromData(builder) {
@@ -64,7 +68,7 @@ class Controller {
 				bookCard.parentNode.removeChild(bookCard)
 				break;
 		}
-		localStorage.setItem("books", JSON.stringify(this.model.books))
+		model.save()
 		location.reload()
 	}
 }
