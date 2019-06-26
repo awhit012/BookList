@@ -2,9 +2,9 @@ class Kanban {
 	constructor() {
 		let storage = JSON.parse(localStorage.getItem('books'))
 		this.books = storage || []
-		this.url = "https://heavy-swan-31.localtunnel.me/books"
+		this.url = "https://nervous-dingo-6.localtunnel.me/books"
 		this.getBooks()
-		this.buildCardsFromData(this.createCard)
+		this.buildCardsFromData()
 	}
 
 	getBooks() {
@@ -73,9 +73,10 @@ class Kanban {
 		xhr.send();
 	}
 
-	buildCardsFromData = (builder) => {
+	buildCardsFromData = () => {
 		this.books.forEach( (book) => {
-			builder(book)
+			let card = new Card(book)
+			this.addToDOM(card.element, book.status)
 		})
 	}
 
@@ -101,61 +102,10 @@ class Kanban {
 		}
 	}
 
-	createPagesMessage = (data) => {
-		let pagesMessage = document.createElement('small')
-		if (data.status === "inProgress") {
-				pagesMessage.innerHTML = `<small>
-											You have read ${data.currentPage} out of ${data.pages} pages!
-										</small>`
-		} else {
-				pagesMessage.innerHTML = `<small>
-											Length: ${data.pages} pages
-										</small>`
-		}
-		return pagesMessage.outerHTML
-	}
-
-	createButton(data) {
-		let buttonNext = document.createElement('button')
-			buttonNext.classList.add("btn")
-		if(data.status === "toRead") {
-			buttonNext.classList.add("btn-outline-primary")
-			buttonNext.id = "markInProgress"
-			buttonNext.innerText = "Mark In Progress"
-		} else if (data.status === "inProgress") {
-			buttonNext.classList.add("btn-outline-success")
-			buttonNext.id = "markComplete"
-			buttonNext.innerText = "Mark Complete"
-		} else {
-			buttonNext.classList.add("btn-outline-danger")
-			buttonNext.id = "delete"
-			buttonNext.innerText = "Delete"
-		}
-		return buttonNext.outerHTML;
-	}
-
-	createCard = (data) => {
-		let pagesMessage = this.createPagesMessage(data)	
-		let button       = this.createButton(data)	
-		let item = `<div id="${data.id}">
-									<hr>
-									<div class="card p-2 bg-faded">
-		                <span class="close right">&times;</span>
-					          <h5 class="card-title">${data.title}</h5>
-					          <p>By ${data.author}</p>
-					          ${pagesMessage}
-					          ${button}
-					        </div>
-					      </div>`
-		let element = document.createElement('div'); // is a node
-		element.innerHTML = item
-		this.addToDOM(element, data.status)
-	}
-
 	addToDOM = (element, status) => {
 		console.log(status)
 		let card = document.querySelector(`#${status}`);
 		card.appendChild(element);
-		card.lastElementChild.lastElementChild.lastElementChild.addEventListener("click", () => { this.controller.handleNext(event, this.addToDOM) })
+		card.lastElementChild.lastElementChild.lastElementChild.addEventListener("click", () => { this.handleNext(event, this.addToDOM) })
 	}
 }
